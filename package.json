@@ -1,0 +1,24 @@
+{
+  "name": "expressopot",
+  "version": "0.0.1",
+  "description": "A little bit nicer way to config express.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/XC-/expressopot.git"
+  },
+  "keywords": [
+    "Express.js",
+    "Express",
+    "configuration"
+  ],
+  "author": "Aki Mäkinen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/XC-/expressopot/issues"
+  },
+  "homepage": "https://github.com/XC-/expressopot#readme"
+}
