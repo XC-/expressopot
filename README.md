@@ -44,7 +44,6 @@ module.exports = app;
           - "development": _Function_.
         If only one is specified in the object, it will be used for both cases.
     
-TODO: Is this kind of behaviour good? Are the status codes necessary as they are not really used (other than for readability)?
 
 Example config file:
 ```
