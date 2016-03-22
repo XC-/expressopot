@@ -1,6 +1,7 @@
 /**
  * Created by Aki Mäkinen on 20.3.2016.
  */
+const _ = require('lodash');
 
 const UNSUPPORTED_SETTING = 'Unsupported setting or property';
 
@@ -19,72 +20,86 @@ function logUnsupported(property, setting) {
 }
 
 function expressopot(app, config) {
-  for (var property in config) {
-    if (config.hasOwnProperty(property)) {
-      switch (property) {
-        case 'views':
-          for (var setting in config.views) {
-            if (Object.keys(SUPPORTED_VIEWS_SETTINGS).indexOf(setting) > -1) {
-              app.set(SUPPORTED_VIEWS_SETTINGS[setting], config.views[setting]);
-            } else {
-              logUnsupported(property, setting);
-            }
+  _.forOwn(config, function(v, property) {
+    switch (property) {
+      case 'views':
+        for (var setting in config.views) {
+          if (Object.keys(SUPPORTED_VIEWS_SETTINGS).indexOf(setting) > -1) {
+            app.set(SUPPORTED_VIEWS_SETTINGS[setting], config.views[setting]);
+          } else {
+            logUnsupported(property, setting);
           }
-          break;
-        case 'middleware':
-          for(var i = 0; i < config.middleware.length; i ++) {
-            app.use(config.middleware[i]);
-          }
-          break;
-        case 'routes':
-          for (var route in config.routes) {
-            if (config.routes.hasOwnProperty(route)) {
-              app.use(route, config.routes[route]);
-            }
-          }
-          break;
-        case 'http_errors':
-          for (var status in config.http_errors) {
-            if (config.http_errors.hasOwnProperty(status)) {
-              switch (typeof (config.http_errors[status])) {
-                case 'object':
-                  var filtered_keys = Object
-                    .keys(config.http_errors[status])
-                    .filter(function(value) {
-                      return SUPPORTED_ENVS.indexOf(value) > -1;
-                    });
-                  var len = filtered_keys.length;
+        }
+        break;
+      case 'middleware':
+        _.forOwn(config.middleware, function(middleware, mw_key) {
+          switch (mw_key) {
+            case ('pre' || 'post'):
+              _.forEach(middleware, function(value) {
+                app.use(value);
+              }) ;
+              break;
 
-                  if (len === 1) {
-                    app.use(config.http_errors[status][filtered_keys[0]]);
-                  } else if (len === 2) {
-                    if (app.get('env') === 'development') {
-                      app.use(config.http_errors[status].development);
+            case 'http_errors':
+              _.forOwn(middleware, function(value, key) {
+                switch (typeof (value)) {
+                  case 'object':
+                    var filtered_keys = Object
+                      .keys(value)
+                      .filter(function(val) {
+                        return SUPPORTED_ENVS.indexOf(val) > -1;
+                      });
+                    var len = filtered_keys.length;
+
+                    if (len === 1) {
+                      app.use(value[filtered_keys[0]]);
+                    } else if (len === 2) {
+                      if (app.get('env') === 'development') {
+                        app.use(value.development);
+                      } else {
+                        app.use(value.production);
+                      }
                     } else {
-                      app.use(config.http_errors[status].production);
+                      console.warn('No supported settings found in: ' + property + '.' + mw_key + '.' + key);
                     }
-                  } else {
-                    console.warn('No supported settings found in: ' + property + '.' + status);
-                  }
-                  break;
-                case 'function':
-                  app.use(config.http_errors[status]);
-                  break;
-                default:
-                  logUnsupported(property, status);
-              }
-            }
+                    break;
+                  case 'function':
+                    app.use(value);
+                    break;
+                  default:
+                    logUnsupported(property + '.' + key, key);
+                }
+              });
+              break;
+
+            case 'parameters':
+              _.forOwn(middleware, function(val, key) {
+                app.param(key, val);
+              });
+              break;
+
+            default:
+              break;
           }
-          break;
-        case 'locals':
-          app.locals = config.locals;
-          break;
-        default:
-          logUnsupported(property);
-          break;
-      }
+        });
+        break;
+      case 'routes':
+        for (var route in config.routes) {
+          if (config.routes.hasOwnProperty(route)) {
+            app.use(route, config.routes[route]);
+          }
+        }
+        break;
+
+      case 'locals':
+        app.locals = config.locals;
+        break;
+
+      default:
+        logUnsupported(property);
+        break;
     }
-  }
+  });
   return app;
 }
 
