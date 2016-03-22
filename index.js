@@ -76,6 +76,9 @@ function expressopot(app, config) {
             }
           }
           break;
+        case 'locals':
+          app.locals = config.locals;
+          break;
         default:
           logUnsupported(property);
           break;
