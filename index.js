@@ -20,6 +20,7 @@ function logUnsupported(property, setting) {
 }
 
 function expressopot(app, config) {
+  if (typeof config !== 'object') throw new TypeError('Configuration must be an object.');
   _.forOwn(config, function(v, property) {
     switch (property) {
       case 'views':
