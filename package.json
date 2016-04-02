@@ -13,7 +13,10 @@
   "keywords": [
     "Express.js",
     "Express",
-    "configuration"
+    "configuration",
+    "config",
+    "conf",
+    "express-conf"
   ],
   "author": "Aki Mäkinen",
   "license": "MIT",
