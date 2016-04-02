@@ -7,7 +7,7 @@ const UNSUPPORTED_SETTING = 'Unsupported setting or property';
 
 const SUPPORTED_VIEWS_SETTINGS = {
   'path': 'views',
-  'engine': ' view engine'
+  'engine': 'view engine'
 };
 
 const SUPPORTED_ENVS = [
@@ -21,11 +21,15 @@ function logUnsupported(property, setting) {
 
 function expressopot(app, config) {
   if (typeof config !== 'object' || config === null) throw new TypeError('Configuration must be an object.');
+  
   _.forOwn(config, function(v, property) {
     switch (property) {
       case 'views':
         for (var setting in config.views) {
           if (Object.keys(SUPPORTED_VIEWS_SETTINGS).indexOf(setting) > -1) {
+            if (typeof config.views[setting] !== 'string') {
+              throw new TypeError('Values in the views portion must be strings.');
+            }
             app.set(SUPPORTED_VIEWS_SETTINGS[setting], config.views[setting]);
           } else {
             logUnsupported(property, setting);
