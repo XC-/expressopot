@@ -26,5 +26,15 @@ describe('Expressopot', function () {
     var config = null;
     expect(expressopot.bind(expressopot, express(), config)).to.throw(TypeError);
   });
+
+  it('Should throw a TypeError if the second parameter is array', function() {
+    var config = [1, 2, 3];
+    expect(expressopot.bind(expressopot, express(), config)).to.throw(TypeError);
+  });
   
+  it('Should be ok if the configuration is an empty object', function() {
+    var config = {};
+    var app = expressopot(express(), config);
+    expect(app).to.exist;
+  });
 });

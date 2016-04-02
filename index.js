@@ -19,8 +19,12 @@ function logUnsupported(property, setting) {
   console.warn(UNSUPPORTED_SETTING  + ': ' + property + (setting ? '.' + setting : '') + '\n');
 }
 
+function testIfObject(variable) {
+  return (typeof variable === 'object' && variable !== null && !Array.isArray(variable));
+}
+
 function expressopot(app, config) {
-  if (typeof config !== 'object' || config === null) throw new TypeError('Configuration must be an object.');
+  if (!testIfObject(config)) throw new TypeError('Configuration must be an object.');
   
   _.forOwn(config, function(v, property) {
     switch (property) {
@@ -37,11 +41,17 @@ function expressopot(app, config) {
         }
         break;
       case 'middleware':
+        if (!testIfObject(config.middleware)) throw new TypeError('Configuration must be an object.');
+
         _.forOwn(config.middleware, function(middleware, mw_key) {
           switch (mw_key) {
             case ('pre'):
             case ('post'):
+              if (!Array.isArray(middleware)) {
+                throw new TypeError('Pre and Post Middleware must be defined inside an array.');
+              }
               _.forEach(middleware, function(value) {
+                if (typeof value !== 'function') throw new TypeError('Middleware must be a function.');
                 app.use(value);
               }) ;
               break;
