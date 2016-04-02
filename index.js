@@ -92,6 +92,7 @@ function expressopot(app, config) {
         break;
 
       case 'locals':
+        if (typeof config.locals !== 'object') throw new TypeError('\'locals\' must be an object.');
         app.locals = config.locals;
         break;
 
