@@ -4,7 +4,7 @@
   "description": "A little bit nicer way to config express.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -26,5 +26,13 @@
   "homepage": "https://github.com/XC-/expressopot#readme",
   "dependencies": {
     "lodash": "~4.6.1"
+  },
+  "devDependencies": {
+    "body-parser": "^1.15.0",
+    "chai": "^3.5.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "mocha": "^2.4.5",
+    "path": "^0.12.7"
   }
 }
