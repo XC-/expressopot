@@ -39,7 +39,8 @@ function expressopot(app, config) {
       case 'middleware':
         _.forOwn(config.middleware, function(middleware, mw_key) {
           switch (mw_key) {
-            case ('pre' || 'post'):
+            case ('pre'):
+            case ('post'):
               _.forEach(middleware, function(value) {
                 app.use(value);
               }) ;
