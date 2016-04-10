@@ -26,6 +26,7 @@ describe('Locals', function() {
     expect(app.locals.testFunction()).to.equal(config.locals.testFunction());
   });
 
+  
   it('should throw an exception if the locals is not an object', function() {
     var config = {
       locals: function() { return 42; }
